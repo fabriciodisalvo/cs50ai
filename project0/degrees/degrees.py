@@ -75,7 +75,10 @@ def main():
         print("Not connected.")
     else:
         degrees = len(path)
-        print(f"{degrees} degrees of separation.")
+        if degrees == 1:
+            print(f"Just {degrees} degree of separation.")
+        else:
+            print(f"{degrees} degrees of separation.")
         path = [(None, source)] + path
         for i in range(degrees):
             person1 = people[path[i][1]]["name"]
@@ -137,7 +140,20 @@ def shortest_path(source, target):
         for action, state in neighbors_for_person(node.state):
             if not frontier.contains_state(state) and state not in explored:
                 child = Node(state=state, parent=node, action=action)
-                frontier.add(child)
+                if child.state == target:
+                    actions = []
+                    cells = []
+                    while child.parent is not None:
+                        actions.append(child.action)
+                        cells.append(child.state)
+                        child = child.parent
+                    actions.reverse()
+                    cells.reverse()
+                    for x in range(len(actions)):
+                        separation_path.append((actions[x], cells[x]))
+                    return separation_path
+                else:
+                    frontier.add(child)
 
 
 def person_id_for_name(name):
