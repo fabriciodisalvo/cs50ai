@@ -96,11 +96,9 @@ def shortest_path(source, target):
 
     # Keep track of number of states explored
     num_explored = 0
-    start = source
-    goal = target
 
     # Initialize frontier to just the starting position
-    start = Node(state=start, parent=None, action=None)
+    start = Node(state=source, parent=None, action=None)
     frontier = QueueFrontier()
     frontier.add(start)
 
@@ -118,8 +116,8 @@ def shortest_path(source, target):
         node = frontier.remove()
         num_explored += 1
 
-        # If node is the goal, then we have a solution
-        if node.state == goal:
+        # If node is the target, then we have a solution
+        if node.state == target:
             actions = []
             cells = []
             while node.parent is not None:
@@ -128,7 +126,6 @@ def shortest_path(source, target):
                 node = node.parent
             actions.reverse()
             cells.reverse()
-            solution = (actions, cells)
             for x in range(len(actions)):
                 separation_path.append((actions[x], cells[x]))
             return separation_path
@@ -141,12 +138,6 @@ def shortest_path(source, target):
             if not frontier.contains_state(state) and state not in explored:
                 child = Node(state=state, parent=node, action=action)
                 frontier.add(child)
-
-
-    # if len(separation_path) > 0:
-    #     return separation_path 
-    # else:
-    #     return None
 
 
 def person_id_for_name(name):
