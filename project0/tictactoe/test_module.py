@@ -1,6 +1,5 @@
 from tictactoe import * 
 
-
 board_1 = [[EMPTY, EMPTY, EMPTY],
             [EMPTY, X, EMPTY],
             [EMPTY, EMPTY, EMPTY]]
@@ -37,17 +36,32 @@ board_9 = [[X, O, O],
             [X, X, O],
             [O, X, X]]
 
+boardX = [[EMPTY, X, O],
+            [X, O, O],
+            [EMPTY, X, EMPTY]]
+
+boardO = [[EMPTY, X, O],
+            [X, O, O],
+            [EMPTY, EMPTY, X]]
+
+boardT = [[X, O, EMPTY],
+            [EMPTY, EMPTY, EMPTY],
+            [EMPTY, EMPTY, EMPTY]]
 
 test_boards = [initial_state(), board_1, board_2, board_3, board_4, board_5, board_6, board_7, board_8, board_9]
 
-for board in test_boards:
-    print(player(board))
-    print(actions(board))
-    print(winner(board))
-    terminal(board)
-    print(utility(board))
+board = initial_state()
 
+def auto_player(board):
+    while True:
+        if terminal(board):
+            print()
+            print('   THE WINNER IS : ' + str(winner(board)))
+            break
+        action = minimax(board)
+        board = result(board, action)
+    return winner(board), board
 
-# result(initial_state(), (1,1))
-
-# result(board_2, (1,1))
+for i in range(100):
+    print('ATTEMPT : ' + str(i))
+    auto_player(initial_state())
