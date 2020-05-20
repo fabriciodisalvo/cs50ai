@@ -57,10 +57,9 @@ def result(board, action):
     new_board = copy.deepcopy(board)
     if new_board[action[0]][action[1]] is None:
         new_board[action[0]][action[1]] = player(board)
+        return new_board
     else:
         raise Exception('Not a valid Action')
-    print(board)
-    print(new_board) 
 
 
 def winner(board):
@@ -79,12 +78,6 @@ def winner(board):
     for player in (X, O):
         for i in winning_boards:
             if board[i[0][0]][i[0][1]] == player:
-                # print(str(player) + " is in place " 
-                #     + str(i[0][0]) + "," + str(i[0][1]) 
-                #     + ", so we check:" 
-                #     + str(i[1][0]) + "," + str(i[1][1]) 
-                #     + " and " 
-                #     + str(i[2][0]) + "," + str(i[2][1]) )
                 if board[i[1][0]][i[1][1]] == player and board[i[2][0]][i[2][1]] == player:
                     return player
     return None
@@ -95,7 +88,6 @@ def terminal(board):
     """
     tested_board = winner(board)
     if tested_board is not None:
-#        print("NO SIGUE")
         return True    
     play_count = 0
     for row in board:
@@ -103,13 +95,9 @@ def terminal(board):
             if column is not None:
                 play_count += 1
             if column is None:
-#                print("SIGUE")
                 return False
     if play_count == 9:
-#        print("NO SIGUE")
         return True
-
-
 
 
 def utility(board):
@@ -127,6 +115,48 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    if terminal(board) == True:
+    playing = player(board)
+    optimal_result = 1
+    if playing == O:
+        optimal_result = -1
+    if terminal(board):
         return None
-    
+    possible_outcomes = []
+    if playing == X:
+        for action in actions(board):
+            outcome = max(-100, min_value(result(board, action)))
+            possible_outcomes.append((action, outcome))
+            if outcome == optimal_result:
+                return action
+        for i in possible_outcomes:
+            if i[1] == 0:
+                return i[0]
+        return possible_outcomes[0][0]
+
+    if playing == O:
+        for action in actions(board):
+            outcome = min(100, max_value(result(board, action)))
+            possible_outcomes.append((action, outcome))
+            if outcome == optimal_result:
+                return action
+        for i in possible_outcomes:
+            if i[1] == 0:
+                return i[0]
+        return possible_outcomes[0][0]
+
+
+def max_value(board):
+    if terminal(board):
+        return utility(board)
+    v = -100
+    for action in actions(board):
+        v = max(v, min_value(result(board, action)))
+    return v
+
+def min_value(board):
+    if terminal(board):
+        return utility(board)
+    v = 100
+    for action in actions(board):
+        v = min(v, max_value(result(board, action)))
+    return v
