@@ -127,4 +127,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-project0/degrees/test_module.py
