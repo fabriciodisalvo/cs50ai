@@ -26,10 +26,9 @@ def player(board):
         return "X"
 
     play_count = 0
-    for row in board:
-        for column in row:
-            if column is not None:
-                play_count += 1
+    for cell in cell_list(board):
+        if cell_reader(board, cell) is not None:
+            play_count += 1
 
     if play_count % 2 == 0:
         return "X"
@@ -42,10 +41,9 @@ def actions(board):
     Returns set of all possible actions (i, j) available on the board.
     """
     possible_actions_set = set()
-    for row in range(len(board)):
-        for column in range(len(board[row])):
-            if board[row][column] is None:
-                possible_actions_set.add((row, column))
+    for cell in cell_list(board):
+        if cell_reader(board, cell) is None:
+            possible_actions_set.add(cell)
     return possible_actions_set
 
 
@@ -54,7 +52,7 @@ def result(board, action):
     Returns the board that results from making move (i, j) on the board.
     """
     new_board = copy.deepcopy(board)
-    if new_board[action[0]][action[1]] is None:
+    if cell_reader(new_board, action) is None:
         new_board[action[0]][action[1]] = player(board)
         return new_board
     else:
@@ -76,10 +74,9 @@ def winner(board):
                       )
 
     for player in (X, O):
-        for i in winning_boards:
-            if board[i[0][0]][i[0][1]] == player:
-                if board[i[1][0]][i[1][1]] == player and board[i[2][0]][i[2][1]] == player:
-                    return player
+        for trifecta in winning_boards:
+            if all(board[i][j] is player for (i, j) in trifecta):
+                return player
     return None
 
 
@@ -91,12 +88,11 @@ def terminal(board):
     if tested_board is not None:
         return True
     play_count = 0
-    for row in board:
-        for column in row:
-            if column is not None:
-                play_count += 1
-            if column is None:
-                return False
+    for cell in cell_list(board):
+        if cell_reader(board, cell) is None:
+            return False
+        else:
+            play_count += 1
     if play_count == 9:
         return True
 
@@ -123,7 +119,7 @@ def minimax(board):
     if terminal(board):
         return None
     possible_outcomes = []
-    if playing == X:
+    if playing is X:
         for action in actions(board):
             outcome = max(-100, min_value(result(board, action)))
             possible_outcomes.append((action, outcome))
@@ -133,8 +129,7 @@ def minimax(board):
             if i[1] == 0:
                 return i[0]
         return possible_outcomes[0][0]
-
-    if playing == O:
+    else:
         for action in actions(board):
             outcome = min(100, max_value(result(board, action)))
             possible_outcomes.append((action, outcome))
@@ -162,3 +157,15 @@ def min_value(board):
     for action in actions(board):
         v = min(v, max_value(result(board, action)))
     return v
+
+
+def cell_list(board):
+    positions = []
+    for row_index, row in enumerate(board):
+        for col_index, column in enumerate(row):
+            positions.append((row_index, col_index))
+    return positions
+
+
+def cell_reader(board, cell):
+    return board[cell[0]][cell[1]]
