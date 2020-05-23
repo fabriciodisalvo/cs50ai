@@ -1,6 +1,8 @@
 """
 Tic Tac Toe Player
 """
+
+import math
 import copy
 
 X = "X"
@@ -30,9 +32,9 @@ def player(board):
             if column is not None:
                 play_count += 1
 
-    if play_count % 2 == 0:
-        return "X"
-    else:
+    if play_count % 2 == 0: 
+        return "X" 
+    else: 
         return "O"
 
 
@@ -44,7 +46,7 @@ def actions(board):
     for row in range(len(board)):
         for column in range(len(board[row])):
             if board[row][column] is None:
-                possible_actions_set.add((row, column))
+                possible_actions_set.add((row,column))
     return possible_actions_set
 
 
@@ -64,15 +66,14 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    winning_boards = (((0, 0), (0, 1), (0, 2)),
-                      ((1, 0), (1, 1), (1, 2)),
-                      ((2, 0), (2, 1), (2, 2)),
-                      ((0, 0), (1, 0), (2, 0)),
-                      ((0, 1), (1, 1), (2, 1)),
-                      ((0, 2), (1, 2), (2, 2)),
-                      ((0, 0), (1, 1), (2, 2)),
-                      ((0, 2), (1, 1), (2, 0))
-                      )
+    winning_boards = (((0,0),(0,1),(0,2)),
+                        ((1,0),(1,1),(1,2)),
+                        ((2,0),(2,1),(2,2)),
+                        ((0,0),(1,0),(2,0)),
+                        ((0,1),(1,1),(2,1)),
+                        ((0,2),(1,2),(2,2)),
+                        ((0,0),(1,1),(2,2)),
+                        ((0,2),(1,1),(2,0)))
 
     for player in (X, O):
         for i in winning_boards:
@@ -81,14 +82,13 @@ def winner(board):
                     return player
     return None
 
-
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
     tested_board = winner(board)
     if tested_board is not None:
-        return True
+        return True    
     play_count = 0
     for row in board:
         for column in row:
@@ -152,7 +152,6 @@ def max_value(board):
     for action in actions(board):
         v = max(v, min_value(result(board, action)))
     return v
-
 
 def min_value(board):
     if terminal(board):
