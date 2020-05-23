@@ -84,8 +84,7 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    tested_board = winner(board)
-    if tested_board is not None:
+    if winner(board) is not None:
         return True
     play_count = 0
     for cell in cell_list(board):
