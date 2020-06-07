@@ -13,13 +13,13 @@ game_rules = And(
     And(Or(AKnight, AKnave), Not(And(AKnight, AKnave))),
     And(Or(BKnight, BKnave), Not(And(BKnight, BKnave))),
     And(Or(CKnight, CKnave), Not(And(CKnight, CKnave)))
-        )
+)
 
 # Puzzle 0
 # A says "I am both a knight and a knave."
 knowledge0 = And(
     game_rules,
-    Implication(AKnight, And(AKnight, AKnave))
+    Biconditional(AKnight, And(AKnave, AKnight))
 )
 
 # Puzzle 1
@@ -27,8 +27,7 @@ knowledge0 = And(
 # B says nothing.
 knowledge1 = And(
     game_rules,
-    Implication(AKnight, And(AKnave, BKnave)),
-    Implication(BKnave, AKnight)
+    Biconditional(AKnight, And(AKnave, BKnave))
 )
 
 # Puzzle 2
@@ -36,11 +35,8 @@ knowledge1 = And(
 # B says "We are of different kinds."
 knowledge2 = And(
     game_rules,
-    Implication(AKnight, Or(And(AKnave, BKnave), And(AKnight, BKnight))),
-    Implication(BKnight, Or(And(AKnave, BKnight), And(AKnight, BKnave))),
-        # NO TERMINADO
-    Implication(BKnight, AKnave),
-    Implication(BKnave, AKnight)
+    Biconditional(AKnight, Or(And(AKnave, BKnave), And(AKnight, BKnight))),
+    Biconditional(BKnight, Or(And(AKnave, BKnight), And(AKnave, BKnight)))
 )
 
 # Puzzle 3
@@ -49,11 +45,11 @@ knowledge2 = And(
 # B says "C is a knave."
 # C says "A is a knight."
 knowledge3 = And(
-        game_rules,
-        # NO TERMINADO
-        AKnight,
-        Implication(BKnight, And(CKnave, AKnave)), 
-        Implication(CKnight, AKnight)
+    game_rules,
+    Biconditional(AKnight, Or(AKnight, AKnave)),
+    Biconditional(BKnight, Implication(AKnight, AKnave)),
+    Biconditional(BKnight, CKnave),
+    Biconditional(CKnight, AKnight)
 )
 
 
