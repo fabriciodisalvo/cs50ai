@@ -121,7 +121,7 @@ class Sentence():
         a cell is known to be a mine.
         """
         if cell in self.cells:
-            cells.remove(cell)
+            self.cells.remove(cell)
             self.count = self.count - 1
 
     def mark_safe(self, cell):
@@ -130,7 +130,7 @@ class Sentence():
         a cell is known to be safe.
         """
         if cell in self.cells:
-            cells.remove(cell)
+            self.cells.remove(cell)
 
 
 
