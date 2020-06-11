@@ -194,6 +194,55 @@ class MinesweeperAI():
         """
         self.moves_made.add(cell)
         self.mark_safe(cell)
+        self.knowledge.append(
+            Sentence(self.check_neighbours(cell), count)
+            )
+        import os 
+        os.system('cls' if os.name=='nt' else 'clear')
+        print(f"Running checks:")
+        print(f"Safes : {self.safes}")
+        print(f"Mines : {self.mines}")
+        print(f"Moves : {self.moves_made}")
+        print(f"Knowledge:")
+        for sentence in self.knowledge:
+            print(sentence)
+        print()
+        print(f"Running cleanup:")
+        new_safes = self.safes
+        new_mines = self.mines
+        for sentence in self.knowledge:
+            print(f"   Reviewing sentence : {sentence}")
+            if sentence.known_safes() is not None:
+                print(f"      Found clean sentence.")
+                for sentence_cell in sentence.cells:
+                    print(f"         Caching {sentence_cell}")
+                    new_safes.add(sentence_cell)
+                print(f"      Clearing.")
+            if sentence.known_mines() is not None:
+                print(f"      Found mined sentence.")
+                for sentence_cell in sentence.cells:
+                    print(f"         Caching {sentence_cell}")
+                    new_mines.add(sentence_cell)
+                print(f"      Clearing.")
+        for new_safe in new_safes:
+            print(f"         Clearing {new_safe}")
+            self.mark_safe(new_safe)
+        for new_mine in new_mines:
+            print(f"         Clearing {new_mine}")
+            self.mark_mine(new_mine)
+        print(f"Checks Completed.")
+        print()
+        print()
+        print(f"Running checks after cleanup:")
+        print()
+        print(f"Safes : {self.safes}")
+        print(f"Mines : {self.mines}")
+        print(f"Moves : {self.moves_made}")
+        print()
+        print(f"Knowledge:")
+        self.knowledge = [x for x in self.knowledge if x.count != 0]
+        for sentence in self.knowledge:
+                print(sentence)
 
     def make_safe_move(self):
         """
