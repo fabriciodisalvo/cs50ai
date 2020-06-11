@@ -220,3 +220,59 @@ class MinesweeperAI():
             if random_move not in self.moves_made and random_move not in self.mines:
                 return random_move
         return None
+
+    def check_neighbours(self, cell):
+        cells_to_add = set()
+        if cell[0] > 0 and cell [0] < 7:
+            if cell[1] > 0 and cell [1] < 7:
+                cells_to_add.add((cell[0] - 1, cell[1] - 1))
+                cells_to_add.add((cell[0] - 1, cell[1] - 0))
+                cells_to_add.add((cell[0] - 1, cell[1] + 1))
+                cells_to_add.add((cell[0] - 0, cell[1] - 1))
+                cells_to_add.add((cell[0] - 0, cell[1] + 1))
+                cells_to_add.add((cell[0] + 1, cell[1] - 1))
+                cells_to_add.add((cell[0] + 1, cell[1] - 0))
+                cells_to_add.add((cell[0] + 1, cell[1] + 1))
+            if cell[1] == 0:
+                cells_to_add.add((cell[0] - 1, cell[1] - 0))
+                cells_to_add.add((cell[0] - 1, cell[1] + 1))
+                cells_to_add.add((cell[0] - 0, cell[1] + 1))
+                cells_to_add.add((cell[0] + 1, cell[1] - 0))
+                cells_to_add.add((cell[0] + 1, cell[1] + 1))
+            if cell[1] == 7:
+                cells_to_add.add((cell[0] - 1, cell[1] - 0))
+                cells_to_add.add((cell[0] - 1, cell[1] - 1))
+                cells_to_add.add((cell[0] - 0, cell[1] - 1))
+                cells_to_add.add((cell[0] + 1, cell[1] - 0))
+                cells_to_add.add((cell[0] + 1, cell[1] - 1))
+        if cell[0] == 0:
+            if cell[1] > 0 and cell [1] < 7:
+                cells_to_add.add((cell[0] - 0, cell[1] - 1))
+                cells_to_add.add((cell[0] - 0, cell[1] + 1))
+                cells_to_add.add((cell[0] + 1, cell[1] - 1))
+                cells_to_add.add((cell[0] + 1, cell[1] - 0))
+                cells_to_add.add((cell[0] + 1, cell[1] + 1))
+            if cell[1] == 0:
+                cells_to_add.add((cell[0] - 0, cell[1] + 1))
+                cells_to_add.add((cell[0] + 1, cell[1] - 0))
+                cells_to_add.add((cell[0] + 1, cell[1] + 1))
+            if cell[1] == 7:
+                cells_to_add.add((cell[0] - 0, cell[1] - 1))
+                cells_to_add.add((cell[0] + 1, cell[1] - 0))
+                cells_to_add.add((cell[0] + 1, cell[1] - 1))
+        if cell[0] == 7:
+            if cell[1] > 0 and cell [1] < 7:
+                cells_to_add.add((cell[0] - 1, cell[1] - 1))
+                cells_to_add.add((cell[0] - 1, cell[1] - 0))
+                cells_to_add.add((cell[0] - 1, cell[1] + 1))
+                cells_to_add.add((cell[0] - 0, cell[1] - 1))
+                cells_to_add.add((cell[0] - 0, cell[1] + 1))
+            if cell[1] == 0:
+                cells_to_add.add((cell[0] - 1, cell[1] - 0))
+                cells_to_add.add((cell[0] - 1, cell[1] + 1))
+                cells_to_add.add((cell[0] - 0, cell[1] + 1))
+            if cell[1] == 7:
+                cells_to_add.add((cell[0] - 1, cell[1] - 0))
+                cells_to_add.add((cell[0] - 1, cell[1] - 1))
+                cells_to_add.add((cell[0] - 0, cell[1] - 1))
+        return cells_to_add
