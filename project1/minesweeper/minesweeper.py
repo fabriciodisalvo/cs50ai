@@ -107,6 +107,8 @@ class Sentence():
         """
         if self.count == len(self.cells):
             return self.cells
+        else:
+            return None
 
     def known_safes(self):
         """
@@ -114,6 +116,8 @@ class Sentence():
         """
         if self.count == 0:
             return self.cells
+        else:
+            return None
 
     def mark_mine(self, cell):
         """
