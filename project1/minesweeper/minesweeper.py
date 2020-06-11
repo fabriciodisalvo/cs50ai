@@ -194,109 +194,51 @@ class MinesweeperAI():
         """
         self.moves_made.add(cell)
         self.mark_safe(cell)
-        self.knowledge.append(
-            Sentence(self.check_neighbours(cell), count)
-            )
-        import os 
-        os.system('cls' if os.name=='nt' else 'clear')
+        self.knowledge.append(Sentence(self.check_neighbours(cell), count))
         self.knowledge = [x for x in self.knowledge if len(x.cells) != 0]
-        self.printing_steps(1)
-        print(f"2. Running cleanup:")
-        new_safes = self.safes
-        new_mines = self.mines
-        for sentence in self.knowledge:
-            print(f"   Reviewing sentence : {sentence}")
-            if sentence.known_safes() is not None:
-                print(f"      Found clean sentence.")
-                for sentence_cell in sentence.cells:
-                    new_safes.add(sentence_cell)
-            if sentence.known_mines() is not None:
-                print(f"      Found mined sentence.")
-                for sentence_cell in sentence.cells:
-                    new_mines.add(sentence_cell)
-                print(f"   Clearing.")
-        for new_safe in new_safes:
-            self.mark_safe(new_safe)
-        for new_mine in new_mines:
-            self.mark_mine(new_mine)
-        self.knowledge = [x for x in self.knowledge if len(x.cells) != 0]
-        print(f"   Clearing {new_safes}")
-        print(f"   Clearing {new_mines}")
-        self.printing_steps(3)
-        print(f"4. Running Sentence subset cleanup:")
-        print()
-        new_knowledge = []
-        for sentence in self.knowledge:
-            for another_sentence in self.knowledge:
-                if sentence != another_sentence:
-                    if another_sentence.cells.issubset(sentence.cells):
-                        print("     Found Subset!")
-                        print(f"       Sentence {another_sentence} is a ")
-                        print(f"         subset of  {sentence}.")
-                        print("       Cleaning...")
-                        new_sentence = Sentence((sentence.cells - another_sentence.cells),sentence.count - another_sentence.count)
-                        new_knowledge.append(new_sentence)
-                        print(f"       New sentence generated:  {new_sentence}.")
-                        print()
-        print()
-        for i in new_knowledge:
-            if i not in self.knowledge:
-                self.knowledge.append(i)
-        print(f"5. Running cleanup:")
-        new_safes = self.safes
-        new_mines = self.mines
-        for sentence in self.knowledge:
-            print(f"     Reviewing sentence : {sentence}")
-            if sentence.known_safes() is not None:
-                print(f"        Found clean sentence.")
-                for sentence_cell in sentence.cells:
-                    new_safes.add(sentence_cell)
-            if sentence.known_mines() is not None:
-                print(f"        Found mined sentence.")
-                for sentence_cell in sentence.cells:
-                    new_mines.add(sentence_cell)
-                print(f"     Clearing.")
-        for new_safe in new_safes:
-            self.mark_safe(new_safe)
-        for new_mine in new_mines:
-            self.mark_mine(new_mine)
-        self.knowledge = [x for x in self.knowledge if len(x.cells) != 0]
-        print(f"         Clearing {new_safes}")
-        print(f"         Clearing {new_mines}")
-        self.printing_steps(6)
-
-    def printing_steps(self, step):
-        print()
-        if step == 1:
-            print(f"1. Running checks:")
-        if step == 3:
-            print(f"3. Running checks after cleanup:")
-        if step == 6:
-            print(f"6. Running checks after Subset cleanup:")
-            print()
-            for i in range(8):
-                print("--" * 8 + "-")
-                for j in range(8):
-                    if (i,j) in self.moves_made:
-                        print("|X", end="")
-                    elif (i,j) in self.mines:
-                        print("|M", end="")
-                    elif (i,j) in self.safes:
-                        print("|O", end="")
-                    else:
-                        print("| ", end="")
-                print("|")
-        print("--" * self.width + "-")
-        print()
-        print(f"    Safes : {self.safes}")
-        print(f"    Mines : {self.mines}")
-        print(f"    Moves : {self.moves_made}")
-        print(f"    Knowledge:")
-        self.knowledge = [x for x in self.knowledge if len(x.cells) != 0]
-        for sentence in self.knowledge:
-            print(f"    {sentence}")
-        print()
-        print()
+        import os  # VISUAL TESTING
+        count_cleared = 0
+        while True:
+            if count_cleared == 0:
+                os.system('cls' if os.name=='nt' else 'clear')  # VISUAL 
+            count_cleared = count_cleared + 1
+            print("knowledge:")
+            for sentence in self.knowledge:
+                print(sentence)
+            new_safes = self.safes
+            new_mines = self.mines
+            for sentence in self.knowledge:
+                if sentence.known_safes() is not None:
+                    for sentence_cell in sentence.cells:
+                        new_safes.add(sentence_cell)
+                if sentence.known_mines() is not None:
+                    for sentence_cell in sentence.cells:
+                        new_mines.add(sentence_cell)
+            for new_safe in new_safes:
+                self.mark_safe(new_safe)
+            for new_mine in new_mines:
+                self.mark_mine(new_mine)
+            self.knowledge = [x for x in self.knowledge if len(x.cells) != 0]
+            print("knowledge after clearing:")
+            for sentence in self.knowledge:
+                print(sentence)
+            new_knowledge = []
+            for sentence in self.knowledge:
+                for another_sentence in self.knowledge:
+                    if sentence != another_sentence:
+                        if another_sentence.cells.issubset(sentence.cells):
+                            new_sentence = Sentence((sentence.cells - another_sentence.cells),sentence.count - another_sentence.count)
+                            new_knowledge.append(new_sentence)
+            new_knowledge = [ x for x in new_knowledge if x not in self.knowledge]
+            if not new_knowledge:
+                print(f"number of iterations: {count_cleared}")
+                break
+            else:
+                print("new_knowledge")
+                for sentence in new_knowledge:
+                    print(sentence)
+                self.knowledge = self.knowledge + new_knowledge
+                print("knowledge after merging:")
 
     def make_safe_move(self):
         """
