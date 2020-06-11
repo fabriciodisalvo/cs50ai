@@ -243,6 +243,58 @@ class MinesweeperAI():
         self.knowledge = [x for x in self.knowledge if x.count != 0]
         for sentence in self.knowledge:
                 print(sentence)
+        print()
+        print()
+        print(f"Running Sentence subset cleanup:")
+        print()
+        new_knowledge = []
+        for sentence in self.knowledge:
+            for another_sentence in self.knowledge:
+                if sentence != another_sentence:
+                    if another_sentence.cells.issubset(sentence.cells):
+                        print("   Found Subset!")
+                        print(f"     Sentence {another_sentence} is a ")
+                        print(f"     subset of  {sentence}.")
+                        print("   Cleaning...")
+                        new_sentence = Sentence((sentence.cells - another_sentence.cells),sentence.count - another_sentence.count)
+                        new_knowledge.append(new_sentence)
+                        print(f"     New sentence generated:  {new_sentence}.")
+                        print()
+        print()
+        for i in new_knowledge:
+            if i not in self.knowledge:
+                self.knowledge.append(i)
+        print(f"Running cleanup:")
+        new_safes = self.safes
+        new_mines = self.mines
+        for sentence in self.knowledge:
+            print(f"   Reviewing sentence : {sentence}")
+            if sentence.known_safes() is not None:
+                print(f"      Found clean sentence.")
+                for sentence_cell in sentence.cells:
+                    print(f"         Caching {sentence_cell}")
+                    new_safes.add(sentence_cell)
+                print(f"      Clearing.")
+            if sentence.known_mines() is not None:
+                print(f"      Found mined sentence.")
+                for sentence_cell in sentence.cells:
+                    print(f"         Caching {sentence_cell}")
+                    new_mines.add(sentence_cell)
+                print(f"      Clearing.")
+        for new_safe in new_safes:
+            print(f"         Clearing {new_safe}")
+            self.mark_safe(new_safe)
+        for new_mine in new_mines:
+            print(f"         Clearing {new_mine}")
+            self.mark_mine(new_mine)
+        print(f"Running checks after Subset cleanup:")
+        print()
+        print(f"Safes : {self.safes}")
+        print(f"Mines : {self.mines}")
+        print()
+        print(f"Knowledge:")
+        for sentence in self.knowledge:
+                print(sentence)
 
     def make_safe_move(self):
         """
