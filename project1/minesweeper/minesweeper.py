@@ -195,7 +195,6 @@ class MinesweeperAI():
         self.moves_made.add(cell)
         self.mark_safe(cell)
         self.knowledge.append(Sentence(self.check_neighbours(cell), count))
-        self.knowledge = [x for x in self.knowledge if len(x.cells) != 0]
         while True:
             new_safes = self.safes
             new_mines = self.mines
@@ -217,8 +216,9 @@ class MinesweeperAI():
                     if sentence != another_sentence:
                         if another_sentence.cells.issubset(sentence.cells):
                             new_sentence = Sentence(
-                                (sentence.cells - another_sentence.cells),
-                                sentence.count - another_sentence.count)
+                                sentence.cells - another_sentence.cells,
+                                sentence.count - another_sentence.count
+                                )
                             new_knowledge.append(new_sentence)
             new_knowledge = [ x for x in new_knowledge if x not in self.knowledge]
             if not new_knowledge:
@@ -256,8 +256,8 @@ class MinesweeperAI():
         return set([
                     (cell[0] + x, cell[1] + y) 
                     for x in (-1, 0, 1) for y in (-1, 0, 1) 
-                    if (cell[0] + x >= 0 and cell[0] + x <= 7) and 
-                        (cell[1] + y >= 0 and cell[1] + y <= 7) and 
+                    if (cell[0] + x >= 0 and cell[0] + x < self.height) and 
+                        (cell[1] + y >= 0 and cell[1] + y < self.width) and 
                         (cell[0] + x, cell[1] + y) != cell
                 ]
             )
