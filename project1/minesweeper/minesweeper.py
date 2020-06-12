@@ -196,15 +196,7 @@ class MinesweeperAI():
         self.mark_safe(cell)
         self.knowledge.append(Sentence(self.check_neighbours(cell), count))
         self.knowledge = [x for x in self.knowledge if len(x.cells) != 0]
-        import os  # VISUAL TESTING
-        count_cleared = 0
         while True:
-            if count_cleared == 0:
-                os.system('cls' if os.name=='nt' else 'clear')  # VISUAL 
-            count_cleared = count_cleared + 1
-            print("knowledge:")
-            for sentence in self.knowledge:
-                print(sentence)
             new_safes = self.safes
             new_mines = self.mines
             for sentence in self.knowledge:
@@ -219,26 +211,20 @@ class MinesweeperAI():
             for new_mine in new_mines:
                 self.mark_mine(new_mine)
             self.knowledge = [x for x in self.knowledge if len(x.cells) != 0]
-            print("knowledge after clearing:")
-            for sentence in self.knowledge:
-                print(sentence)
             new_knowledge = []
             for sentence in self.knowledge:
                 for another_sentence in self.knowledge:
                     if sentence != another_sentence:
                         if another_sentence.cells.issubset(sentence.cells):
-                            new_sentence = Sentence((sentence.cells - another_sentence.cells),sentence.count - another_sentence.count)
+                            new_sentence = Sentence(
+                                (sentence.cells - another_sentence.cells),
+                                sentence.count - another_sentence.count)
                             new_knowledge.append(new_sentence)
             new_knowledge = [ x for x in new_knowledge if x not in self.knowledge]
             if not new_knowledge:
-                print(f"number of iterations: {count_cleared}")
                 break
             else:
-                print("new_knowledge")
-                for sentence in new_knowledge:
-                    print(sentence)
                 self.knowledge = self.knowledge + new_knowledge
-                print("knowledge after merging:")
 
     def make_safe_move(self):
         """
